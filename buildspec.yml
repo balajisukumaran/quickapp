@@ -1,0 +1,42 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+      dotnet: 8.0
+    commands:
+      - echo Installing Angular CLI
+      - npm install -g @angular/cli
+      - echo Installing frontend dependencies
+      - cd quickapp.client
+      - npm install
+      - cd ..
+
+  pre_build:
+    commands:
+      - echo Restoring .NET Core dependencies
+      - dotnet restore QuickApp.sln
+
+  build:
+    commands:
+      - echo Building Angular project
+      - cd quickapp.client
+      - npm run build --prod
+      - cd ..
+      - echo Building .NET Core project
+      - dotnet build QuickApp.sln --configuration Release
+
+  post_build:
+    commands:
+      - echo Running .NET Core tests
+      - dotnet test QuickApp.sln --configuration Release
+
+artifacts:
+  files:
+    - "**/bin/Release/net8.0/**/*"
+    - "quickapp.client/dist/**/*"
+
+cache:
+  paths:
+    - quickapp.client/node_modules/**/*
