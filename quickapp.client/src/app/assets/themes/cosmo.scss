@@ -1,0 +1,12 @@
+@import '../styles/custom-vendor';
+
+@import 'bootswatch/dist/cosmo/variables';
+@import 'bootstrap/scss/bootstrap';
+@import 'bootswatch/dist/cosmo/bootswatch';
+
+@import 'app-theme';
+
+
+.icon-addon #searchInput.form-control {
+  border-radius: 5px;
+}
