@@ -3,40 +3,23 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 18
-      dotnet: 8.0
+      docker: 20
     commands:
-      - echo Installing Angular CLI
-      - npm install -g @angular/cli
-      - echo Installing frontend dependencies
-      - cd quickapp.client
-      - npm install
-      - cd ..
+      - echo Installing dependencies for building Docker image
 
   pre_build:
     commands:
-      - echo Restoring .NET Core dependencies
-      - dotnet restore QuickApp.sln
+      - echo Logging in to Amazon ECR
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
 
   build:
     commands:
-      - echo Building Angular project
-      - cd quickapp.client
-      - npm run build --prod
-      - cd ..
-      - echo Building .NET Core project
-      - dotnet build QuickApp.sln --configuration Release
+      - echo Building Docker image
+      - docker build -t quickapp:latest .
+      - echo Tagging Docker image
+      - docker tag quickapp:latest 590183799919.dkr.ecr.us-east-1.amazonaws.com/quickapp:latest
 
   post_build:
     commands:
-      - echo Running .NET Core tests
-      - dotnet test QuickApp.sln --configuration Release
-
-artifacts:
-  files:
-    - "**/bin/Release/net8.0/**/*"
-    - "quickapp.client/dist/**/*"
-
-cache:
-  paths:
-    - quickapp.client/node_modules/**/*
+      - echo Pushing Docker image to ECR
+      - docker push 590183799919.dkr.ecr.us-east-1.amazonaws.com/quickapp:latest
