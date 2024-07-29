@@ -131,6 +131,9 @@ builder.Services.AddOpenIddict()
 
         options.UseAspNetCore()
                .EnableTokenEndpointPassthrough();
+
+        options.UseAspNetCore()
+               .DisableTransportSecurityRequirement();
     })
     .AddValidation(options =>
     {
