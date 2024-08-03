@@ -1,0 +1,197 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: QuickApp VPC setup with public and private subnets for EC2 and RDS respectively.
+
+Resources:
+  QuickAppVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: QuickAppVPC
+
+  QuickAppPublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref QuickAppVPC
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: us-east-1a
+      Tags:
+        - Key: Name
+          Value: QuickAppPublicSubnet1
+
+  QuickAppPublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref QuickAppVPC
+      CidrBlock: 10.0.2.0/24
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: us-east-1b
+      Tags:
+        - Key: Name
+          Value: QuickAppPublicSubnet2
+
+  QuickAppPublicSubnet3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref QuickAppVPC
+      CidrBlock: 10.0.3.0/24
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: us-east-1c
+      Tags:
+        - Key: Name
+          Value: QuickAppPublicSubnet3
+
+  QuickAppPrivateSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref QuickAppVPC
+      CidrBlock: 10.0.4.0/24
+      AvailabilityZone: us-east-1a
+      Tags:
+        - Key: Name
+          Value: QuickAppPrivateSubnetA
+
+  QuickAppPrivateSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref QuickAppVPC
+      CidrBlock: 10.0.5.0/24
+      AvailabilityZone: us-east-1b
+      Tags:
+        - Key: Name
+          Value: QuickAppPrivateSubnetB
+
+  QuickAppDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: "DB subnet group for QuickApp RDS"
+      SubnetIds:
+        - !Ref QuickAppPrivateSubnetA
+        - !Ref QuickAppPrivateSubnetB
+      Tags:
+        - Key: Name
+          Value: QuickAppDBSubnetGroup
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: QuickAppInternetGateway
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref QuickAppVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref QuickAppVPC
+      Tags:
+        - Key: Name
+          Value: QuickAppPublicRouteTable
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  SubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref QuickAppPublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  SubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref QuickAppPublicSubnet2
+      RouteTableId: !Ref PublicRouteTable
+
+  SubnetRouteTableAssociation3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref QuickAppPublicSubnet3
+      RouteTableId: !Ref PublicRouteTable
+
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH and HTTP to EC2 instance
+      VpcId: !Ref QuickAppVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  RDSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow access from EC2 instances to RDS
+      VpcId: !Ref QuickAppVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          SourceSecurityGroupId: !Ref EC2SecurityGroup
+
+Outputs:
+  VPCId:
+    Description: VPC ID
+    Value: !Ref QuickAppVPC
+    Export:
+      Name: { "Fn::Sub": "${AWS::StackName}-VPCId" }
+
+  PublicSubnet1Id:
+    Description: Public Subnet 1 ID
+    Value: !Ref QuickAppPublicSubnet1
+    Export:
+      Name: { "Fn::Sub": "${AWS::StackName}-PublicSubnet1Id" }
+
+  PublicSubnet2Id:
+    Description: Public Subnet 2 ID
+    Value: !Ref QuickAppPublicSubnet2
+    Export:
+      Name: { "Fn::Sub": "${AWS::StackName}-PublicSubnet2Id" }
+
+  PublicSubnet3Id:
+    Description: Public Subnet 3 ID
+    Value: !Ref QuickAppPublicSubnet3
+    Export:
+      Name: { "Fn::Sub": "${AWS::StackName}-PublicSubnet3Id" }
+
+  DBSubnetGroupName:
+    Description: "The name of the RDS DB Subnet Group"
+    Value: !Ref QuickAppDBSubnetGroup
+    Export:
+      Name: !Sub "${AWS::StackName}-DBSubnetGroupName"
+
+  EC2SecurityGroupId:
+    Description: EC2 Security group ID
+    Value: !Ref EC2SecurityGroup
+    Export:
+      Name: { "Fn::Sub": "${AWS::StackName}-EC2SecurityGroupId" }
+
+  RDSSecurityGroupId:
+    Description: RDS Security group ID
+    Value: !Ref RDSSecurityGroup
+    Export:
+      Name: { "Fn::Sub": "${AWS::StackName}-RDSSecurityGroupId" }
+
+  PublicSubnetRouteTable:
+    Description: Route Table for the Public Subnet
+    Value: !Ref PublicRouteTable

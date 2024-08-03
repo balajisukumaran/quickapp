@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation template for deploying an EC2 instance.
+
+Parameters:
+  KeyName:
+    Description: SSH key name for accessing the EC2 instance.
+    Type: AWS::EC2::KeyPair::KeyName
+
+Resources:
+  SecretsManagerAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: AccessSecretsManager
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource: !ImportValue "SECRET-STACK-SecretArn"
+
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - Ref: SecretsManagerAccessRole
+
+  QuickAppEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0bef12ee7bc073414
+      InstanceType: t2.micro
+      KeyName: !Ref KeyName
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      SecurityGroupIds:
+        - !ImportValue "NETWORK-STACK-EC2SecurityGroupId"
+      SubnetId: !ImportValue "NETWORK-STACK-PublicSubnetId"
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          yum update -y
+          yum install -y docker
+          service docker start
+          usermod -a -G docker ec2-user
+          docker run -d --name quick-app -p 80:8080 balajisukumaran96/quick-app
+
+Outputs:
+  EC2InstanceId:
+    Description: "Instance ID of the created EC2 instance"
+    Value: !Ref QuickAppEC2
+    Export:
+      Name: !Sub "${AWS::StackName}-InstanceId"

@@ -27,69 +27,64 @@
             "outputPath": "dist/quickapp.client",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               {
                 "input": "src/styles.scss"
               },
               {
-                "input": "src/app/assets/themes/cerulean.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/cerulean.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/cosmo.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/cosmo.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/flatly.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/flatly.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/journal.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/journal.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/lumen.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/lumen.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/minty.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/minty.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/pulse.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/pulse.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/sketchy.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/sketchy.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/slate.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/slate.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/solar.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/solar.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/spacelab.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/spacelab.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/superhero.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/superhero.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/united.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/united.scss",
                 "inject": false
               }
             ],
@@ -153,70 +148,64 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               {
                 "input": "src/styles.scss"
               },
               {
-                "input": "src/app/assets/themes/cerulean.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/cerulean.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/cosmo.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/cosmo.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/flatly.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/flatly.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/journal.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/journal.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/lumen.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/lumen.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/minty.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/minty.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/pulse.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/pulse.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/sketchy.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/sketchy.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/slate.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/slate.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/solar.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/solar.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/spacelab.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/spacelab.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/superhero.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/superhero.scss",
                 "inject": false
               },
               {
-                "input": "src/app/assets/themes/united.scss",
+                "input": "https://dbf13ja5t0ooe.cloudfront.net/app/assets/themes/united.scss",
                 "inject": false
               }
             ],
@@ -227,19 +216,14 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ],
+    "schematicCollections": ["@angular-eslint/schematics"],
     "analytics": false
   }
 }
