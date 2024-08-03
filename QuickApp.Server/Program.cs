@@ -24,14 +24,30 @@ using QuickApp.Server.Services.Email;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using static OpenIddict.Abstractions.OpenIddictConstants;
+using Amazon;
+using Amazon.SecretsManager;
+using Amazon.SecretsManager.Model;
+using Newtonsoft.Json.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
+
+/************* CONFIGURE APP CONFIGURATION *************/
+
+var secretManagerClient = new AmazonSecretsManagerClient(RegionEndpoint.USEast1); // Specify your region
+
+builder.Host.ConfigureAppConfiguration((context, config) =>
+{
+    var builtConfig = config.Build();
+
+    config.AddSecretsFromAwsSecretsManager(secretManagerClient, "quickapp/appsettings.json")
+          .AddSecretsFromAwsSecretsManager(secretManagerClient, $"quickapp/appsettings.Development.json");
+});
 
 /************* ADD SERVICES *************/
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                 throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
+ 
 var migrationsAssembly = typeof(Program).GetTypeInfo().Assembly.GetName().Name;
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -280,3 +296,29 @@ catch (Exception ex)
 
 app.Run();
 
+/************* ADDITIONAL METHODS *************/
+
+public static class ConfigurationBuilderExtensions
+{
+    public static IConfigurationBuilder AddSecretsFromAwsSecretsManager(this IConfigurationBuilder configurationBuilder, IAmazonSecretsManager secretsManagerClient, string secretName)
+    {
+        var request = new GetSecretValueRequest
+        {
+            SecretId = secretName
+        };
+
+        Console.WriteLine(secretName);
+
+        Console.WriteLine(secretsManagerClient);
+
+        var response = secretsManagerClient.GetSecretValueAsync(request).Result;
+
+        if (response.SecretString != null)
+        {
+            var secretJson = JObject.Parse(response.SecretString);
+            configurationBuilder.AddJsonStream(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(secretJson.ToString())));
+        }
+
+        return configurationBuilder;
+    }
+}

@@ -20,6 +20,9 @@ RUN dotnet publish QuickApp.Server/QuickApp.Server.csproj -c Release -o ./publis
 # Stage 2: Build the runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 
+# Install AWS CLI
+RUN apt-get update && apt-get install -y awscli
+
 # Set the working directory
 WORKDIR /app
 
